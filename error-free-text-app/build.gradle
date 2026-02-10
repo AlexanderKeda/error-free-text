@@ -24,7 +24,7 @@ dependencies {
 }
 
 ext {
-    appName = 'error-free-text'
+    appName = 'error-free-text-app'
     appVersion = '0.0.1-SNAPSHOT'
 }
 

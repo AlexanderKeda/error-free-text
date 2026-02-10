@@ -1,19 +1,40 @@
-plugins {
-    id 'java'
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'idea'
+
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '21'
+    targetCompatibility = '21'
+
+
+    repositories {
+        mavenCentral()
+    }
+
+    compileJava {
+        options.encoding = "UTF-8"
+    }
+
+    compileTestJava {
+        options.encoding = "UTF-8"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
 }
 
-group = 'org.keda.errorfreetext'
-version = '1.0-SNAPSHOT'
+tasks.register("dockerComposeUp", Exec) {
+    group = 'docker'
 
-repositories {
-    mavenCentral()
+    dependsOn ':error-free-text-app:docker'
+    commandLine  "docker", "compose", "up"
 }
 
-dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-}
+tasks.register("dockerComposeDown", Exec) {
+    group = 'docker'
 
-test {
-    useJUnitPlatform()
+    commandLine  "docker", "compose", "down"
 }
