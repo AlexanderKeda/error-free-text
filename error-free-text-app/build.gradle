@@ -1,0 +1,48 @@
+plugins {
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.5'
+    id 'com.palantir.docker' version '0.36.0'
+}
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-web')
+
+    compileOnly('org.projectlombok:lombok:1.18.32')
+    annotationProcessor('org.projectlombok:lombok:1.18.32')
+
+    testCompileOnly('org.projectlombok:lombok:1.18.32')
+    testAnnotationProcessor('org.projectlombok:lombok:1.18.32')
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('uk.org.webcompere:model-assert:1.0.0')
+
+
+    test {
+        useJUnitPlatform()
+    }
+
+}
+
+ext {
+    appName = 'error-free-text'
+    appVersion = '0.0.1-SNAPSHOT'
+}
+
+jar {
+    enabled = false
+}
+
+bootJar {
+    enabled = true
+    archiveBaseName.set(appName)
+    archiveVersion.set(appVersion)
+}
+
+docker {
+    name "${appName}:${appVersion}"
+    files tasks.bootJar.outputs
+}
+
+tasks.named("docker").configure {
+    dependsOn tasks.bootJar
+}
