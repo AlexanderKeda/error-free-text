@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="1" author="AlexanderKeda">
+        <createTable tableName="correction_tasks">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="task_uuid" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="original_text" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="corrected_text" type="TEXT">
+            </column>
+            <column name="language" type="VARCHAR(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="error_message" type="VARCHAR(500)">
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="AlexanderKeda">
+        <createIndex indexName="ix_correction_tasks_task_uuid"
+                     tableName="correction_tasks"
+                     unique="true">
+            <column name="task_uuid"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

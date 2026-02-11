@@ -1,16 +1,16 @@
 services:
   db:
     image: postgres:15
-    container_name: my_postgres
+    container_name: postgres-container
     restart: always
     environment:
-      POSTGRES_USER: admin
+      POSTGRES_USER: root
       POSTGRES_PASSWORD: 12345
       POSTGRES_DB: error-free-text-db
     ports:
       - "5432:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U admin -d error-free-text-db" ]
+      test: [ "CMD-SHELL", "pg_isready -U root -d error-free-text-db" ]
       interval: 10s
       timeout: 5s
       retries: 5
