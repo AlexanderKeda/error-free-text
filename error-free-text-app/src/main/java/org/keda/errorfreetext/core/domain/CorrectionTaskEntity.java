@@ -26,7 +26,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CorrectionTask {
+public class CorrectionTaskEntity {
 
     @Id
     @Column(name = "id")

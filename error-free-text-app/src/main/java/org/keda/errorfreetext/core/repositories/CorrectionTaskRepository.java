@@ -1,6 +1,6 @@
 package org.keda.errorfreetext.core.repositories;
 
-import org.keda.errorfreetext.core.domain.CorrectionTask;
+import org.keda.errorfreetext.core.domain.CorrectionTaskEntity;
 import org.keda.errorfreetext.core.domain.TaskStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,10 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface CorrectionTaskRepository extends JpaRepository<CorrectionTask, Long> {
+public interface CorrectionTaskRepository extends JpaRepository<CorrectionTaskEntity, Long> {
 
-    Optional<CorrectionTask> findByUuid(UUID uuid);
+    Optional<CorrectionTaskEntity> findByUuid(UUID uuid);
 
-    Page<CorrectionTask> findByStatusOrderByCreatedAtAsc(TaskStatus status, Pageable pageable);
+    Page<CorrectionTaskEntity> findByStatusOrderByCreatedAtAsc(TaskStatus status, Pageable pageable);
 
 }
