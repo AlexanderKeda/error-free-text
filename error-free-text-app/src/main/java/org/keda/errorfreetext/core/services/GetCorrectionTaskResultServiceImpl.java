@@ -8,9 +8,8 @@ import org.keda.errorfreetext.core.domain.CorrectionTaskEntity;
 import org.keda.errorfreetext.core.domain.TaskStatus;
 import org.keda.errorfreetext.core.repositories.CorrectionTaskRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
@@ -23,8 +22,7 @@ class GetCorrectionTaskResultServiceImpl implements GetCorrectionTaskResultServi
         var correctionTaskOpt = correctionTaskRepository.findByTaskUuid(query.uuid());
         return correctionTaskOpt
                 .map(this::buildCorrectionTaskResult)
-                .orElseThrow(() -> new ResponseStatusException(
-                        NOT_FOUND,
+                .orElseThrow(() -> new NoSuchElementException(
                         "Task with uuid: " + query.uuid() + " not found"
                 ));
     }

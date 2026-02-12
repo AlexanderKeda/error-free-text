@@ -9,9 +9,8 @@ import org.keda.errorfreetext.core.repositories.CorrectionTaskRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -134,11 +133,10 @@ class GetCorrectionTaskResultServiceImplTest {
         when(repository.findByTaskUuid(query.uuid()))
                 .thenReturn(Optional.empty());
 
-        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+        NoSuchElementException ex = assertThrows(NoSuchElementException.class,
                 () -> service.get(query)
         );
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
-        assertEquals(message, ex.getReason());
+        assertEquals(message, ex.getMessage());
     }
 
 }
