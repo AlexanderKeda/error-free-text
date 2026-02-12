@@ -11,8 +11,8 @@ import java.util.UUID;
 
 public interface CorrectionTaskRepository extends JpaRepository<CorrectionTaskEntity, Long> {
 
-    Optional<CorrectionTaskEntity> findByUuid(UUID uuid);
+    Optional<CorrectionTaskEntity> findByTaskUuid(UUID uuid);
 
-    Page<CorrectionTaskEntity> findByStatusOrderByCreatedAtAsc(TaskStatus status, Pageable pageable);
+    Page<CorrectionTaskEntity> findByTaskStatusOrderByCreatedAtAsc(TaskStatus status, Pageable pageable);
 
 }

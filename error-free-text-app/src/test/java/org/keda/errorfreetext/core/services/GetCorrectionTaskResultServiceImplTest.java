@@ -43,7 +43,7 @@ class GetCorrectionTaskResultServiceImplTest {
                 .correctedText(correctText)
                 .errorMessage(errorMessage)
                 .build();
-        when(repository.findByUuid(query.uuid()))
+        when(repository.findByTaskUuid(query.uuid()))
                 .thenReturn(Optional.of(taskEntity));
 
         var result = service.get(query);
@@ -67,7 +67,7 @@ class GetCorrectionTaskResultServiceImplTest {
                 .correctedText(correctText)
                 .errorMessage(errorMessage)
                 .build();
-        when(repository.findByUuid(query.uuid()))
+        when(repository.findByTaskUuid(query.uuid()))
                 .thenReturn(Optional.of(taskEntity));
 
         var result = service.get(query);
@@ -91,7 +91,7 @@ class GetCorrectionTaskResultServiceImplTest {
                 .correctedText(correctText)
                 .errorMessage(errorMessage)
                 .build();
-        when(repository.findByUuid(query.uuid()))
+        when(repository.findByTaskUuid(query.uuid()))
                 .thenReturn(Optional.of(taskEntity));
 
         var result = service.get(query);
@@ -115,7 +115,7 @@ class GetCorrectionTaskResultServiceImplTest {
                 .correctedText(correctText)
                 .errorMessage(errorMessage)
                 .build();
-        when(repository.findByUuid(query.uuid()))
+        when(repository.findByTaskUuid(query.uuid()))
                 .thenReturn(Optional.of(taskEntity));
 
         var result = service.get(query);
@@ -131,7 +131,7 @@ class GetCorrectionTaskResultServiceImplTest {
         var uuid = UUID.randomUUID();
         var query = new CorrectionTaskResultQuery(uuid);
         var message = "Task with uuid: " + query.uuid() + " not found";
-        when(repository.findByUuid(query.uuid()))
+        when(repository.findByTaskUuid(query.uuid()))
                 .thenReturn(Optional.empty());
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class,

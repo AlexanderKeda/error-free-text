@@ -20,7 +20,7 @@ class GetCorrectionTaskResultServiceImpl implements GetCorrectionTaskResultServi
 
     @Override
     public CorrectionTaskResult get(CorrectionTaskResultQuery query) {
-        var correctionTaskOpt = correctionTaskRepository.findByUuid(query.uuid());
+        var correctionTaskOpt = correctionTaskRepository.findByTaskUuid(query.uuid());
         return correctionTaskOpt
                 .map(this::buildCorrectionTaskResult)
                 .orElseThrow(() -> new ResponseStatusException(
