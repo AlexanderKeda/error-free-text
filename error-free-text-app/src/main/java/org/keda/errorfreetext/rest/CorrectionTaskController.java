@@ -1,5 +1,6 @@
 package org.keda.errorfreetext.rest;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keda.errorfreetext.core.api.command.CorrectionTaskResult;
@@ -32,7 +33,7 @@ public class CorrectionTaskController {
             consumes = "application/json",
             produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateCorrectionTaskResult create(@RequestBody CreateCorrectionTaskCommand command) {
+    public CreateCorrectionTaskResult create(@RequestBody @Valid CreateCorrectionTaskCommand command) {
         log.info("Received request to create correction task");
         log.info("Request to create: {}", command);
         var response = createCorrectionTaskService.create(command);
