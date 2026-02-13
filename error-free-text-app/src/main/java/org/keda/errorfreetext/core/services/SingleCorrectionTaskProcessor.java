@@ -18,13 +18,14 @@ class SingleCorrectionTaskProcessor {
     private final TextCorrectionProcessor textCorrectionProcessor;
 
     CorrectionTaskEntity process(CorrectionTaskEntity taskEntity) {
+        log.info("Start of processing task: {}", taskEntity.getTaskUuid());
         String correctedText;
         try {
             correctedText = textCorrectionProcessor
                     .correct(taskEntity.getOriginalText(), taskEntity.getLanguage());
         } catch (Exception e) {
             log.warn(
-                    "Failed to process correction task [uuid={}, language={}, text='{}']: {}",
+                    "Failed to process task [uuid={}, language={}, text='{}']: {}",
                     taskEntity.getTaskUuid(),
                     taskEntity.getLanguage(),
                     taskEntity.getOriginalText(),
@@ -37,6 +38,7 @@ class SingleCorrectionTaskProcessor {
         }
         taskEntity.setCorrectedText(correctedText);
         taskEntity.setTaskStatus(TaskStatus.DONE);
+        log.info("Task processing completed successfully, uuid={}", taskEntity.getTaskUuid());
         return repository.save(taskEntity);
     }
 }
