@@ -4,11 +4,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SpellerRequestOptionsTest {
+class SpellerRequestOptionsBuilderTest {
+
+    private final SpellerRequestOptionsBuilder builder = new SpellerRequestOptionsBuilder();
 
     @Test
     void shouldReturnZeroWhenAllFlagsAreFalse() {
-        int result = SpellerRequestOptions.buildOptions(
+        int result = builder.build(
                 false,
                 false,
                 false,
@@ -20,32 +22,32 @@ class SpellerRequestOptionsTest {
 
     @Test
     void shouldReturnAllFlagsWhenAllFlagsAreTrue() {
-        int result = SpellerRequestOptions.buildOptions(
+        int result = builder.build(
                 true,
                 true,
                 true,
                 true
         );
 
-        int expected = SpellerRequestOptions.IGNORE_DIGITS
-                + SpellerRequestOptions.IGNORE_URLS
-                + SpellerRequestOptions.FIND_REPEAT_WORDS
-                + SpellerRequestOptions.IGNORE_CAPITALIZATION;
+        int expected = SpellerRequestOptionsBuilder.IGNORE_DIGITS
+                + SpellerRequestOptionsBuilder.IGNORE_URLS
+                + SpellerRequestOptionsBuilder.FIND_REPEAT_WORDS
+                + SpellerRequestOptionsBuilder.IGNORE_CAPITALIZATION;
 
         assertEquals(expected, result);
     }
 
     @Test
     void shouldReturnIgnoreDigitsAndIgnoreUrlsOnly() {
-        int result = SpellerRequestOptions.buildOptions(
+        int result = builder.build(
                 true,
                 true,
                 false,
                 false
         );
 
-        int expected = SpellerRequestOptions.IGNORE_DIGITS
-                + SpellerRequestOptions.IGNORE_URLS;
+        int expected = SpellerRequestOptionsBuilder.IGNORE_DIGITS
+                + SpellerRequestOptionsBuilder.IGNORE_URLS;
 
         assertEquals(expected, result);
     }
