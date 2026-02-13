@@ -7,6 +7,7 @@ import org.keda.errorfreetext.core.domain.CorrectionTaskEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
@@ -19,9 +20,12 @@ class ProcessCorrectionTasksServiceImpl implements ProcessCorrectionTasksService
     @Override
     public void processNewTasks() {
         List<CorrectionTaskEntity> tasks = taskProvider.getNewTasks();
-        List<CorrectionTaskEntity> savedTasks = tasks.stream()
+        List<CompletableFuture<CorrectionTaskEntity>> futures = tasks.stream()
                 .map(taskProcessor::process)
                 .toList();
+        List<CorrectionTaskEntity> savedTasks = futures.stream()
+                .map(CompletableFuture::join)
+                        .toList();
         log.info("Finished processing of {} new correction tasks", savedTasks.size());
     }
 }

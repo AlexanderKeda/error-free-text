@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -38,7 +39,7 @@ class ProcessCorrectionTasksServiceImplTest {
         when(taskProvider.getNewTasks())
                 .thenReturn(tasks);
         when(taskProcessor.process(any()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(invocation -> CompletableFuture.completedFuture(invocation.getArgument(0)));
 
         service.processNewTasks();
 

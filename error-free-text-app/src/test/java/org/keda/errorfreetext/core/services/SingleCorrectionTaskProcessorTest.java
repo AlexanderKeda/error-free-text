@@ -48,7 +48,7 @@ class SingleCorrectionTaskProcessorTest {
                 .thenThrow(exception);
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        CorrectionTaskEntity result = processor.process(taskEntity);
+        CorrectionTaskEntity result = processor.process(taskEntity).join();
 
         assertEquals(TaskStatus.ERROR, result.getTaskStatus());
         assertEquals("processing failed", result.getErrorMessage());
@@ -63,7 +63,7 @@ class SingleCorrectionTaskProcessorTest {
                 .thenReturn("corrected text");
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        CorrectionTaskEntity result = processor.process(taskEntity);
+        CorrectionTaskEntity result = processor.process(taskEntity).join();
 
         assertEquals(TaskStatus.DONE, result.getTaskStatus());
         assertEquals("corrected text", result.getCorrectedText());

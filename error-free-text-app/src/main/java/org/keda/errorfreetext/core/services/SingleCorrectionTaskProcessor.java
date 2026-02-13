@@ -6,7 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.keda.errorfreetext.core.domain.CorrectionTaskEntity;
 import org.keda.errorfreetext.core.domain.TaskStatus;
 import org.keda.errorfreetext.core.repositories.CorrectionTaskRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.CompletableFuture;
 
 
 @Service
@@ -17,7 +20,8 @@ class SingleCorrectionTaskProcessor {
     private final CorrectionTaskRepository repository;
     private final TextCorrectionProcessor textCorrectionProcessor;
 
-    CorrectionTaskEntity process(CorrectionTaskEntity taskEntity) {
+    @Async("virtualCorrectionTasksExecutor")
+    public CompletableFuture<CorrectionTaskEntity> process(CorrectionTaskEntity taskEntity) {
         log.info("Start of processing task: {}", taskEntity.getTaskUuid());
         String correctedText;
         try {
@@ -32,11 +36,11 @@ class SingleCorrectionTaskProcessor {
             );
             taskEntity.setErrorMessage(e.getMessage());
             taskEntity.setTaskStatus(TaskStatus.ERROR);
-            return repository.save(taskEntity);
+            return CompletableFuture.completedFuture(repository.save(taskEntity));
         }
         taskEntity.setCorrectedText(correctedText);
         taskEntity.setTaskStatus(TaskStatus.DONE);
         log.info("Task processing completed successfully, uuid={}", taskEntity.getTaskUuid());
-        return repository.save(taskEntity);
+        return CompletableFuture.completedFuture(repository.save(taskEntity));
     }
 }
