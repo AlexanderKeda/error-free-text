@@ -11,7 +11,7 @@ public class TextSplitter {
 
     private final int maxChunkSize;
 
-    public TextSplitter(
+    TextSplitter(
             @Value("${text.splitter.max-chunk-size:10000}") int maxChunkSize
     ) {
         this.maxChunkSize = maxChunkSize;
