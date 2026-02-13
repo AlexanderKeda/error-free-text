@@ -2,7 +2,7 @@ package org.keda.errorfreetext.infrastructure.yandex.speller;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SpellerRequestOptionsTest {
 

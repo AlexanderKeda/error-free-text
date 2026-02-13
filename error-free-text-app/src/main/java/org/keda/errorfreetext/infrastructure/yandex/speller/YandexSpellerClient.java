@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 class YandexSpellerClient {
 
-    private static final ParameterizedTypeReference<List<List<SpellerError>>> RESPONSE_TYPE =
+    private static final ParameterizedTypeReference<List<List<SpellerCorrection>>> RESPONSE_TYPE =
             new ParameterizedTypeReference<>() {};
     private final String baseUrl;
     private final String checkTextsUri;
@@ -31,7 +31,7 @@ class YandexSpellerClient {
                 .build();
     }
 
-    List<List<SpellerError>> checkTexts(List<String> texts, String lang, int options) {
+    List<List<SpellerCorrection>> checkTexts(List<String> texts, String lang, int options) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         for (String text : texts) {
             body.add("text", text);
