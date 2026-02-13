@@ -25,12 +25,10 @@ class SingleCorrectionTaskProcessor {
                     .correct(taskEntity.getOriginalText(), taskEntity.getLanguage());
         } catch (Exception e) {
             log.warn(
-                    "Failed to process task [uuid={}, language={}, text='{}']: {}",
+                    "Failed to process task uuid={}. {}: {}",
                     taskEntity.getTaskUuid(),
-                    taskEntity.getLanguage(),
-                    taskEntity.getOriginalText(),
-                    e.getMessage(),
-                    e
+                    e.getClass(),
+                    e.getMessage()
             );
             taskEntity.setErrorMessage(e.getMessage());
             taskEntity.setTaskStatus(TaskStatus.ERROR);
