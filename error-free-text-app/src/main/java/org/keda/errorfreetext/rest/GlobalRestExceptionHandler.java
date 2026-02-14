@@ -78,9 +78,9 @@ public class GlobalRestExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponseDto handleOtherExceptions(Exception ex, HttpServletRequest request) {
         var error = new ErrorResponseDto("Internal server error", SERVER_INTERNAL_ERROR, Instant.now(), request.getRequestURI());
-        log.error("Unhandled error! {}: {}. {}",
+        log.error("Unhandled error! {}: {}.",
                 error.getClass().getSimpleName(),
-                error.errorMessage(), ex.getStackTrace());
+                error.errorMessage(), ex);
         return error;
     }
 }

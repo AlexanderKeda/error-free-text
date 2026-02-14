@@ -10,6 +10,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
@@ -30,7 +31,8 @@ class YandexSpellerClient {
             backoff = @Backoff(
                     delayExpression = "${yandex.speller.retry-delay:1000}",
                     multiplierExpression = "${yandex.speller.retry-multiplier:2}"
-            )
+            ),
+            noRetryFor = HttpClientErrorException.class
     )
     public List<List<SpellerCorrection>> checkTexts(List<String> texts, String lang, int options) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();

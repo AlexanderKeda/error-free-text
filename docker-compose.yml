@@ -17,7 +17,7 @@ services:
 
   error-free-text-app:
     container_name: error-free-text-container
-    image: error-free-text-app:0.0.1-SNAPSHOT
+    image: error-free-text-app:1.0.1
     environment:
       SPRING_PROFILES_ACTIVE: docker-compose
     ports:

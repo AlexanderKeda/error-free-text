@@ -17,11 +17,12 @@ dependencies {
     implementation('org.springframework.retry:spring-retry')
 
     implementation('org.liquibase:liquibase-core')
-    implementation('com.h2database:h2')
+
 
     compileOnly('org.projectlombok:lombok')
     annotationProcessor('org.projectlombok:lombok')
 
+    runtimeOnly('com.h2database:h2')
     runtimeOnly('org.postgresql:postgresql')
 
     testCompileOnly('org.projectlombok:lombok')
@@ -39,7 +40,7 @@ dependencies {
 
 ext {
     appName = 'error-free-text-app'
-    appVersion = '0.0.1-SNAPSHOT'
+    appVersion = '1.0.1'
 }
 
 jar {
