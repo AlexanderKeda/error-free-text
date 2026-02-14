@@ -31,10 +31,10 @@ class SingleCorrectionTaskProcessor {
             log.warn(
                     "Failed to process task uuid={}. {}: {}",
                     taskEntity.getTaskUuid(),
-                    e.getClass(),
+                    e.getClass().getSimpleName(),
                     e.getMessage()
             );
-            taskEntity.setErrorMessage(e.getMessage());
+            taskEntity.setErrorMessage(String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
             taskEntity.setTaskStatus(TaskStatus.ERROR);
             return CompletableFuture.completedFuture(repository.save(taskEntity));
         }

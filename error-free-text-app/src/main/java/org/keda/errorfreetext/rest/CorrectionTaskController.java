@@ -35,18 +35,17 @@ public class CorrectionTaskController {
     @ResponseStatus(HttpStatus.CREATED)
     public CreateCorrectionTaskResult create(@RequestBody @Valid CreateCorrectionTaskCommand command) {
         log.info("Received request to create correction task");
-        log.info("Request to create: {}", command);
         var response = createCorrectionTaskService.create(command);
-        log.info("Response on create request: {}", response);
+        log.info("Task created successfully: {}", response.uuid());
         return response;
     }
 
     @GetMapping("/{uuid}")
     public CorrectionTaskResult getCorrectionTaskResult(@PathVariable UUID uuid) {
-        log.info("Request to get result: {}", uuid);
+        log.info("Received request for task result: uuid={}", uuid);
         var query = new CorrectionTaskResultQuery(uuid);
         var response = getCorrectionTaskResultService.get(query);
-        log.info("Response on get request: {}", response);
+        log.info("Processed request for task result: uuid={}, status={}", response.uuid(), response.status());
         return response;
     }
 
