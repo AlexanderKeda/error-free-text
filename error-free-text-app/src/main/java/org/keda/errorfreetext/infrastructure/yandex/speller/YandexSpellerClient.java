@@ -1,8 +1,12 @@
 package org.keda.errorfreetext.infrastructure.yandex.speller;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import org.keda.errorfreetext.properties.YandexSpellerProperties;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -11,27 +15,24 @@ import org.springframework.web.client.RestClient;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 class YandexSpellerClient {
 
     private static final ParameterizedTypeReference<List<List<SpellerCorrection>>> RESPONSE_TYPE =
-            new ParameterizedTypeReference<>() {};
-    private final String baseUrl;
-    private final String checkTextsUri;
+            new ParameterizedTypeReference<>() {
+            };
+
     private final RestClient restClient;
+    private final YandexSpellerProperties spellerProperties;
 
-    YandexSpellerClient(
-            @Value("${yandex.speller.base-url}") String baseUrl,
-            @Value("${yandex.speller.check-texts.uri}") String checkTextsUri
-    ) {
-        this.baseUrl = baseUrl;
-        this.checkTextsUri = checkTextsUri;
-        this.restClient = RestClient
-                .builder()
-                .baseUrl(baseUrl)
-                .build();
-    }
-
-    List<List<SpellerCorrection>> checkTexts(List<String> texts, String lang, int options) {
+    @Retryable(
+            maxAttemptsExpression = "${yandex.speller.retry-max-attempts:3}",
+            backoff = @Backoff(
+                    delayExpression = "${yandex.speller.retry-delay:1000}",
+                    multiplierExpression = "${yandex.speller.retry-multiplier:2}"
+            )
+    )
+    public List<List<SpellerCorrection>> checkTexts(List<String> texts, String lang, int options) {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         for (String text : texts) {
             body.add("text", text);
@@ -40,7 +41,7 @@ class YandexSpellerClient {
         body.add("options", String.valueOf(options));
 
         return restClient.post()
-                .uri(checkTextsUri)
+                .uri(spellerProperties.checkTextsUri())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(body)
                 .retrieve()
