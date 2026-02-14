@@ -29,10 +29,11 @@ class SingleCorrectionTaskProcessor {
                     .correct(taskEntity.getOriginalText(), taskEntity.getLanguage());
         } catch (Exception e) {
             log.warn(
-                    "Failed to process task uuid={}. {}: {}",
+                    "Failed to process task uuid={}. {}: {}. {}",
                     taskEntity.getTaskUuid(),
                     e.getClass().getSimpleName(),
-                    e.getMessage()
+                    e.getMessage().isEmpty(),
+                    e.getStackTrace()
             );
             taskEntity.setErrorMessage(String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage()));
             taskEntity.setTaskStatus(TaskStatus.ERROR);

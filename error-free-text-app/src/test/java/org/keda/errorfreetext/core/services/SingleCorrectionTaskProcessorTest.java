@@ -43,15 +43,15 @@ class SingleCorrectionTaskProcessorTest {
 
     @Test
     void shouldSetErrorStatusAndMessageWhenTextCorrectionFails() {
-        RuntimeException exception = new RuntimeException("processing failed");
+        RuntimeException ex = new RuntimeException("processing failed");
         when(textCorrectionProcessor.correct("some text", Language.EN))
-                .thenThrow(exception);
+                .thenThrow(ex);
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         CorrectionTaskEntity result = processor.process(taskEntity).join();
 
         assertEquals(TaskStatus.ERROR, result.getTaskStatus());
-        assertEquals("processing failed", result.getErrorMessage());
+        assertEquals(String.format("%s: %s", ex.getClass().getSimpleName(), ex.getMessage()), result.getErrorMessage());
         verify(repository, times(1)).save(taskEntity);
         verify(textCorrectionProcessor, times(1))
                 .correct(taskEntity.getOriginalText(), taskEntity.getLanguage());

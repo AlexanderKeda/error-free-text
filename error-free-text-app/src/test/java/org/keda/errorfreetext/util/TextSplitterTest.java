@@ -50,7 +50,6 @@ class TextSplitterTest {
     @Test
     void shouldReturnEmptyListWhenTextIsNull() {
         String text = null;
-        when(properties.maxChunkSize()).thenReturn(10);
         List<String> chunks = splitter.split(text);
         assertTrue(chunks.isEmpty());
     }
