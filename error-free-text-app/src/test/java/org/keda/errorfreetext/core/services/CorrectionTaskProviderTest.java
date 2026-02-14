@@ -1,11 +1,12 @@
 package org.keda.errorfreetext.core.services;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.keda.errorfreetext.core.domain.CorrectionTaskEntity;
 import org.keda.errorfreetext.core.domain.TaskStatus;
 import org.keda.errorfreetext.core.repositories.CorrectionTaskRepository;
+import org.keda.errorfreetext.properties.CorrectionTaskProviderProperties;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
@@ -22,20 +23,20 @@ class CorrectionTaskProviderTest {
     @Mock
     private CorrectionTaskRepository repository;
 
+    @Mock
+    private CorrectionTaskProviderProperties properties;
+
+    @InjectMocks
     private CorrectionTaskProvider provider;
 
     private static final int PAGE_SIZE = 10;
-
-    @BeforeEach
-    void setUp() {
-        provider = new CorrectionTaskProvider(repository, PAGE_SIZE);
-    }
 
     @Test
     void shouldChangeStatusOfReturnedEntitiesToProcessing() {
         CorrectionTaskEntity task1 = newTask();
         CorrectionTaskEntity task2 = newTask();
         List<CorrectionTaskEntity> tasks = List.of(task1, task2);
+        when(properties.pageSize()).thenReturn(PAGE_SIZE);
         when(repository.findByTaskStatusOrderByCreatedAtAsc(
                 TaskStatus.NEW, Pageable.ofSize(PAGE_SIZE))
         ).thenReturn(tasks);
