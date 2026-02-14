@@ -6,7 +6,7 @@ import org.keda.errorfreetext.core.domain.Language;
 import org.keda.errorfreetext.core.validation.annotation.ValidText;
 
 public record CreateCorrectionTaskCommand(
-        @NotBlank @ValidText String text,
-        @NotNull Language language
+        @NotBlank(message = "не может быть пустым!") @ValidText String text,
+        @NotNull(message = "не указан!") Language language
 ) {
 }

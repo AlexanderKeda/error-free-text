@@ -19,11 +19,16 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalRestExceptionHandler {
 
+    private static final int DESERIALIZATION_ERROR = 40001;
+    private static final int VALIDATION_ERROR = 40002;
+    private static final int TASK_NOT_FOUND_ERROR = 40401;
+    private static final int SERVER_INTERNAL_ERROR = 50000;
+
     @ExceptionHandler(NoSuchElementException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponseDto handleNoSuchElementException(NoSuchElementException ex, HttpServletRequest request) {
-        var error = new ErrorResponseDto(ex.getMessage(), 40401, Instant.now(), request.getRequestURI());
-        log.warn("Handled NoSuchElementException: {}",
+        var error = new ErrorResponseDto(ex.getMessage(), TASK_NOT_FOUND_ERROR, Instant.now(), request.getRequestURI());
+        log.warn("Handled NoSuchElementException: {}.",
                 error.errorMessage());
         return error;
     }
@@ -31,9 +36,9 @@ public class GlobalRestExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
-        var error = new ErrorResponseDto(ex.getMessage(), 40402, Instant.now(), request.getRequestURI());
-        log.warn("Handled IllegalArgumentException: {}",
-                error.errorMessage());
+        var error = new ErrorResponseDto("Invalid argument provided.", VALIDATION_ERROR, Instant.now(), request.getRequestURI());
+        log.warn("Handled IllegalArgumentException: {}.",
+                ex.getMessage());
         return error;
     }
 
@@ -45,8 +50,8 @@ public class GlobalRestExceptionHandler {
                 .stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining("; "));
-        var error = new ErrorResponseDto(message, 40402, Instant.now(), request.getRequestURI());
-        log.warn("Handled MethodArgumentNotValidException: {}",
+        var error = new ErrorResponseDto(message, VALIDATION_ERROR, Instant.now(), request.getRequestURI());
+        log.warn("Handled MethodArgumentNotValidException: {}.",
                 error.errorMessage());
         return error;
     }
@@ -54,27 +59,28 @@ public class GlobalRestExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
-        var error = new ErrorResponseDto(ex.getMessage(), 40402, Instant.now(), request.getRequestURI());
-        log.warn("Handled MethodArgumentTypeMismatchException: {}",
-                error.errorMessage());
+        var error = new ErrorResponseDto("Malformed request format.", DESERIALIZATION_ERROR, Instant.now(), request.getRequestURI());
+        log.warn("Handled MethodArgumentTypeMismatchException: {}.",
+                ex.getMessage());
         return error;
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, HttpServletRequest request) {
-        var error = new ErrorResponseDto(ex.getMessage(), 40402, Instant.now(), request.getRequestURI());
-        log.warn("Handled HttpMessageNotReadableException: {}",
-                error.errorMessage());
+        var error = new ErrorResponseDto("Malformed request format.", DESERIALIZATION_ERROR, Instant.now(), request.getRequestURI());
+        log.warn("Handled HttpMessageNotReadableException: {}.",
+                ex.getMessage());
         return error;
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponseDto handleOtherExceptions(Exception ex, HttpServletRequest request) {
-        var error = new ErrorResponseDto(ex.getMessage(), 50000, Instant.now(), request.getRequestURI());
-        log.error("Unhandled error: {}",
-                error.errorMessage(), ex);
+        var error = new ErrorResponseDto("Internal server error", SERVER_INTERNAL_ERROR, Instant.now(), request.getRequestURI());
+        log.error("Unhandled error! {}: {}. {}",
+                error.getClass().getSimpleName(),
+                error.errorMessage(), ex.getStackTrace());
         return error;
     }
 }
