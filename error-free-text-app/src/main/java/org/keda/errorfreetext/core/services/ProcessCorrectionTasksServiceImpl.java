@@ -19,7 +19,7 @@ class ProcessCorrectionTasksServiceImpl implements ProcessCorrectionTasksService
 
     private final CorrectionTaskProvider taskProvider;
     private final SingleCorrectionTaskProcessor taskProcessor;
-    private final CorrectionTaskRepository correctionTaskRepository;
+    private final CorrectionTaskRepository repository;
 
     @Override
     public void processNewTasks() {
@@ -37,7 +37,7 @@ class ProcessCorrectionTasksServiceImpl implements ProcessCorrectionTasksService
 
     private CorrectionTaskEntity handleFutureException(Throwable ex, CorrectionTaskEntity task) {
         task.setTaskStatus(TaskStatus.NEW);
-        correctionTaskRepository.save(task);
+        repository.save(task);
         log.error("Task {} failed. Status changed to NEW. {}: {}",
                 task.getId(),
                 ex.getClass().getSimpleName(),

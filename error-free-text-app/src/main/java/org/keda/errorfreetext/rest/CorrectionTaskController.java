@@ -29,7 +29,7 @@ public class CorrectionTaskController {
     private final CreateCorrectionTaskService createCorrectionTaskService;
     private final GetCorrectionTaskResultService getCorrectionTaskResultService;
 
-    @PostMapping(path = "/",
+    @PostMapping(path = "",
             consumes = "application/json",
             produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)

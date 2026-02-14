@@ -2,7 +2,6 @@ services:
   db:
     image: postgres:15
     container_name: postgres-container
-    restart: always
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 12345
@@ -19,6 +18,8 @@ services:
   error-free-text-app:
     container_name: error-free-text-container
     image: error-free-text-app:0.0.1-SNAPSHOT
+    environment:
+      SPRING_PROFILES_ACTIVE: docker-compose
     ports:
       - "8080:8080"
     depends_on:

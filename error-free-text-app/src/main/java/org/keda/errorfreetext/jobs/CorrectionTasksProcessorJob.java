@@ -16,9 +16,9 @@ class CorrectionTasksProcessorJob {
 
     @Scheduled(fixedDelayString = "${correction.task.job.delay:45000}")
     void doJob() {
-        log.info("Job: starting processing of new correction tasks");
+        log.info("Started processing new correction tasks");
         processCorrectionTasksService.processNewTasks();
-        log.info("Job: finished work");
+        log.info("Finished processing new correction tasks");
     }
 
 }
