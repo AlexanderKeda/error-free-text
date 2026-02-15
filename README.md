@@ -36,9 +36,9 @@
 docker compose up
 ```
 
-Сервисы:
-- `db` (PostgreSQL 15)
-- `error-free-text-app` (Spring Boot приложение, порт `8080` проброшен)
+Детали:
+- порт `8080` проброшен на localhost (контейнер `error-free-text-app`)
+- БД PostgreSQL 15 (контейнер `db`)
 
 ### 2. Локально (profile `local`)
 
@@ -46,8 +46,8 @@ docker compose up
 ./gradlew :error-free-text-app:bootRun
 ```
 Детали:
-- приложение работает на порту `8080`
-- БД: H2 in-memory
+- порту `8080`
+- БД H2 in-memory
 
 ## API
 
@@ -107,6 +107,25 @@ Response:
 }
 ```
 
+## Конфигурация
+
+По умолчанию приложение имеет следующие параметры:
+
+### Text processing
+- text.splitter.max-chunk-size=10000 — максимальный размер фрагмента текста при разбиении.
+
+### Correction task
+- correction.task.provider.page-size=50 — размер страницы при получении задач.
+- correction.task.job.delay=60000 — задержка между запусками фоновой задачи (мс).
+### Yandex Speller integration
+- yandex.speller.base-url=https://speller.yandex.net/services/spellservice.json — базовый URL сервиса.
+- yandex.speller.check-texts-uri=/checkTexts — endpoint для проверки текста.
+- yandex.speller.connection-timeout=3000 — timeout соединения (мс).
+- yandex.speller.read-timeout=5000 — timeout чтения ответа (мс).
+- yandex.speller.retry-max-attempts=3 — максимальное количество попыток при ошибке.
+- yandex.speller.retry-delay=1000 — начальная задержка между retry (мс).
+- yandex.speller.retry-multiplier=2 — множитель для exponential backoff.
+
 ## Валидация входящих данных
 
 - `language`: только `EN` или `RU`
@@ -135,3 +154,8 @@ Response:
     - `IGNORE_CAPITALIZATION` всегда выключен
 
 Если вызов внешнего API завершился ошибкой, задача переводится в `ERROR`.
+
+## Тесты
+
+- Для большинства классов реализованы unit-тесты
+- Для REST-контроллера и сервиса обработки задач реализованы интеграционные тесты.
