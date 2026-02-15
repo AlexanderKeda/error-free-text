@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.keda.errorfreetext.core.api.command.CreateCorrectionTaskResult;
+import org.keda.errorfreetext.core.domain.CorrectionTaskEntity;
+import org.keda.errorfreetext.core.domain.Language;
+import org.keda.errorfreetext.core.domain.TaskStatus;
 import org.keda.errorfreetext.core.repositories.CorrectionTaskRepository;
 import org.keda.errorfreetext.rest.dto.ErrorResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -21,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@Transactional
 @AutoConfigureMockMvc
 class CorrectionTaskControllerIT {
 
@@ -35,13 +42,20 @@ class CorrectionTaskControllerIT {
 
     @Test
     void get_shouldReturnHttp200AndResponseWithTaskStatusNew() throws Exception {
+        UUID uuid = UUID.randomUUID();
 
-        String requestUuid = "96e46569-5729-40d1-a707-3628b1ca53b1";
+        var task = CorrectionTaskEntity.builder()
+                .taskUuid(uuid)
+                .originalText("text")
+                .language(Language.EN)
+                .taskStatus(TaskStatus.NEW)
+                .build();
+        repository.save(task);
 
-        mockMvc.perform(get("/tasks/{uuid}", requestUuid)
+        mockMvc.perform(get("/tasks/{uuid}", uuid.toString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uuid").value(requestUuid))
+                .andExpect(jsonPath("$.uuid").value(uuid.toString()))
                 .andExpect(jsonPath("$.status").value("NEW"))
                 .andExpect(jsonPath("$.correctedText").doesNotExist())
                 .andExpect(jsonPath("$.errorMessage").doesNotExist());
@@ -49,13 +63,20 @@ class CorrectionTaskControllerIT {
 
     @Test
     void get_shouldReturnHttp200AndResponseWithTaskStatusProcessing() throws Exception {
+        UUID uuid = UUID.randomUUID();
 
-        String requestUuid = "96e46569-5729-40d1-a707-3628b1ca53b2";
+        var task = CorrectionTaskEntity.builder()
+                .taskUuid(uuid)
+                .originalText("text")
+                .language(Language.EN)
+                .taskStatus(TaskStatus.PROCESSING)
+                .build();
+        repository.save(task);
 
-        mockMvc.perform(get("/tasks/{uuid}", requestUuid)
+        mockMvc.perform(get("/tasks/{uuid}", uuid.toString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uuid").value(requestUuid))
+                .andExpect(jsonPath("$.uuid").value(uuid.toString()))
                 .andExpect(jsonPath("$.status").value("PROCESSING"))
                 .andExpect(jsonPath("$.correctedText").doesNotExist())
                 .andExpect(jsonPath("$.errorMessage").doesNotExist());
@@ -63,39 +84,55 @@ class CorrectionTaskControllerIT {
 
     @Test
     void get_shouldReturnHttp200AndResponseWithTaskStatusDone() throws Exception {
+        UUID uuid = UUID.randomUUID();
 
-        String requestUuid = "96e46569-5729-40d1-a707-3628b1ca53b3";
+        var task = CorrectionTaskEntity.builder()
+                .taskUuid(uuid)
+                .originalText("text")
+                .language(Language.EN)
+                .correctedText("text")
+                .taskStatus(TaskStatus.DONE)
+                .build();
+        repository.save(task);
 
-        mockMvc.perform(get("/tasks/{uuid}", requestUuid)
+        mockMvc.perform(get("/tasks/{uuid}", uuid.toString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uuid").value(requestUuid))
+                .andExpect(jsonPath("$.uuid").value(uuid.toString()))
                 .andExpect(jsonPath("$.status").value("DONE"))
-                .andExpect(jsonPath("$.correctedText").value("Hello World!"))
+                .andExpect(jsonPath("$.correctedText").value("text"))
                 .andExpect(jsonPath("$.errorMessage").doesNotExist());
     }
 
     @Test
     void get_shouldReturnHttp200AndResponseWithTaskStatusError() throws Exception {
+        UUID uuid = UUID.randomUUID();
 
-        String requestUuid = "96e46569-5729-40d1-a707-3628b1ca53b4";
+        var task = CorrectionTaskEntity.builder()
+                .taskUuid(uuid)
+                .originalText("text")
+                .language(Language.EN)
+                .taskStatus(TaskStatus.ERROR)
+                .errorMessage("error")
+                .build();
+        repository.save(task);
 
-        mockMvc.perform(get("/tasks/{uuid}", requestUuid)
+        mockMvc.perform(get("/tasks/{uuid}", uuid.toString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uuid").value(requestUuid))
+                .andExpect(jsonPath("$.uuid").value(uuid.toString()))
                 .andExpect(jsonPath("$.status").value("ERROR"))
                 .andExpect(jsonPath("$.correctedText").doesNotExist())
-                .andExpect(jsonPath("$.errorMessage").value("Error while processing task"));
+                .andExpect(jsonPath("$.errorMessage").value("error"));
     }
 
     @Test
     void get_shouldReturnHttp404AndResponseWithErrorDescriptionWhenUuidNotFound() throws Exception {
-        String requestUuid = "11e46569-5729-40d1-a707-3628b1ca53b5";
-        String expectedErrorMessage = String.format( "Task with uuid: %s not found", requestUuid);
-        String expectedPath = String.format( "/tasks/%s", requestUuid);
+        String uuid = UUID.randomUUID().toString();
+        String expectedErrorMessage = String.format( "Task with uuid: %s not found", uuid);
+        String expectedPath = String.format( "/tasks/%s", uuid);
 
-        mockMvc.perform(get("/tasks/{uuid}", requestUuid)
+        mockMvc.perform(get("/tasks/{uuid}", uuid)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorMessage").value(expectedErrorMessage))
@@ -177,4 +214,5 @@ class CorrectionTaskControllerIT {
                 language
         );
     }
+
 }

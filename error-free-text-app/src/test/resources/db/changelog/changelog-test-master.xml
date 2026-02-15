@@ -9,6 +9,6 @@
     <include file="db/changelog/changelog-master.xml"/>
 
     <!-- Include test data changesets -->
-    <include file="db/changelog/changes/test-changelog-1.xml"/>
+
     
 </databaseChangeLog>
