@@ -18,7 +18,6 @@ dependencies {
 
     implementation('org.liquibase:liquibase-core')
 
-
     compileOnly('org.projectlombok:lombok')
     annotationProcessor('org.projectlombok:lombok')
 
@@ -29,13 +28,13 @@ dependencies {
     testAnnotationProcessor('org.projectlombok:lombok')
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('org.springframework.cloud:spring-cloud-contract-wiremock:4.0.4')
     testImplementation('uk.org.webcompere:model-assert:1.0.0')
 
+}
 
-    test {
-        useJUnitPlatform()
-    }
-
+test {
+    useJUnitPlatform()
 }
 
 ext {

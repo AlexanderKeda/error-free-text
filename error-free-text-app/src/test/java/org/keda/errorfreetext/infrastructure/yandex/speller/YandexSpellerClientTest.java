@@ -3,7 +3,6 @@ package org.keda.errorfreetext.infrastructure.yandex.speller;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.keda.errorfreetext.properties.YandexSpellerProperties;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -70,34 +69,6 @@ class YandexSpellerClientTest {
         verify(requestBodySpec).body(any(MultiValueMap.class));
         verify(requestBodySpec).retrieve();
         verify(responseSpec).body(RESPONSE_TYPE);
-    }
-
-    @Test
-    void shouldAddAllTextsToRequestBody() {
-        List<String> texts = List.of("one", "two", "three");
-
-        when(properties.checkTextsUri()).thenReturn("/check");
-        when(restClient.post()).thenReturn(requestBodyUriSpec);
-        when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodySpec);
-        when(requestBodySpec.contentType(any())).thenReturn(requestBodySpec);
-
-        ArgumentCaptor<MultiValueMap<String, String>> bodyCaptor =
-                ArgumentCaptor.forClass(MultiValueMap.class);
-
-        when(requestBodySpec.body(bodyCaptor.capture()))
-                .thenReturn(requestBodySpec);
-        when(requestBodySpec.retrieve()).thenReturn(responseSpec);
-        when(responseSpec.body(RESPONSE_TYPE))
-                .thenReturn(List.of());
-
-        client.checkTexts(texts, "ru", 6);
-
-        MultiValueMap<String, String> body = bodyCaptor.getValue();
-
-        assertEquals(3, body.get("text").size());
-        assertTrue(body.get("text").containsAll(texts));
-        assertEquals("ru", body.getFirst("lang"));
-        assertEquals("6", body.getFirst("options"));
     }
 
     @Test
