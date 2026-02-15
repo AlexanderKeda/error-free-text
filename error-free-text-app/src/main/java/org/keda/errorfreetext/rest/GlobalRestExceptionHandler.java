@@ -36,7 +36,7 @@ public class GlobalRestExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
-        var error = new ErrorResponseDto("Invalid argument provided.", VALIDATION_ERROR, Instant.now(), request.getRequestURI());
+        var error = new ErrorResponseDto("Invalid argument provided", VALIDATION_ERROR, Instant.now(), request.getRequestURI());
         log.warn("Handled IllegalArgumentException: {}.",
                 ex.getMessage());
         return error;
@@ -59,7 +59,7 @@ public class GlobalRestExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
-        var error = new ErrorResponseDto("Malformed request format.", DESERIALIZATION_ERROR, Instant.now(), request.getRequestURI());
+        var error = new ErrorResponseDto("Invalid request", DESERIALIZATION_ERROR, Instant.now(), request.getRequestURI());
         log.warn("Handled MethodArgumentTypeMismatchException: {}.",
                 ex.getMessage());
         return error;
@@ -68,7 +68,7 @@ public class GlobalRestExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, HttpServletRequest request) {
-        var error = new ErrorResponseDto("Malformed request format.", DESERIALIZATION_ERROR, Instant.now(), request.getRequestURI());
+        var error = new ErrorResponseDto("Invalid request", DESERIALIZATION_ERROR, Instant.now(), request.getRequestURI());
         log.warn("Handled HttpMessageNotReadableException: {}.",
                 ex.getMessage());
         return error;
